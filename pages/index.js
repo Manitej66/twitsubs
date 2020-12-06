@@ -41,7 +41,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Text h3 style={{ padding: 10 }}>
-        Welcome to <Code>Youtubio</Code>
+        Welcome to <Code>Twitsubs</Code>
       </Text>
       <Text p style={{ padding: 10 }}>
         Youtubio is a tool that automatically updates your twitter bio with the

@@ -8,7 +8,7 @@ async function handler(req, res) {
   const url =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/api"
-      : "https://youtubio-api.vercel.app/api";
+      : "https://twitsubs.vercel.app/api";
 
   const cryptr = new Cryptr(process.env.NEXT_PUBLIC_PASSWORD);
 
