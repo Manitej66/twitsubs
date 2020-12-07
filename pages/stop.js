@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Text, Button } from "@geist-ui/react";
 import { auth } from "../config/firebase";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 const stop = () => {
   const router = useRouter();
@@ -24,6 +25,10 @@ const stop = () => {
           type="error"
           onClick={() => {
             auth.signOut().then(() => {
+              Cookies.remove("token");
+              Cookies.remove("secret");
+              Cookies.remove("desc");
+              Cookies.remove("username");
               router.replace("/");
             });
           }}
