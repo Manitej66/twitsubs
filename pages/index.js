@@ -8,17 +8,17 @@ import Cryptr from "cryptr";
 const cryptr = new Cryptr(process.env.NEXT_PUBLIC_PASSWORD);
 
 export default function Home() {
-  const [user, setUser] = useState(null);
   const [load, setLoad] = useState(true);
   const router = useRouter();
   useEffect(() => {
-    auth.onAuthStateChanged((userob) => {
-      setUser(userob);
-      setLoad(false);
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        return router.replace("/dashboard");
+      } else {
+        setLoad(false);
+      }
     });
   }, []);
-
-  if (user) router.replace("/dashboard");
 
   if (load) {
     return (
@@ -26,7 +26,7 @@ export default function Home() {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
+          height: "95vh",
           justifyContent: "center",
         }}
       >
@@ -65,7 +65,7 @@ export default function Home() {
         onClick={async () => {
           await auth
             .signInWithPopup(provider)
-            .then(async (res) => {
+            .then((res) => {
               Cookie.set("token", cryptr.encrypt(res.credential.accessToken));
               Cookie.set("secret", cryptr.encrypt(res.credential.secret));
               Cookie.set("desc", res.additionalUserInfo.profile.description);
