@@ -16,6 +16,7 @@
     "next": "10.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "set-interval-async": "1.0.33",
     "twitter-lite": "^0.14.0",
     "yt-channel-info": "^1.1.4"
   }
