@@ -6,6 +6,9 @@ import {
   setIntervalAsync,
   clearIntervalAsync,
 } from "set-interval-async/dynamic";
+var schedule = require("node-schedule");
+var rule = new schedule.RecurrenceRule();
+rule.second = 50;
 
 async function handler(req, res) {
   const { channelId, email } = req.body;
@@ -85,15 +88,20 @@ async function handler(req, res) {
           // while (doc.data().status) {
           //   await refreshData();
           // }
-          refreshData();
 
-          const timer = setIntervalAsync(async () => {
+          var j = schedule.scheduleJob(rule, async function () {
             await refreshData();
-          }, 120 * 1000);
+          });
 
-          if (!doc.data().status) {
-            await clearIntervalAsync(timer);
-          }
+          // refreshData();
+
+          // const timer = setIntervalAsync(async () => {
+          //   await refreshData();
+          // }, 120 * 1000);
+
+          // if (!doc.data().status) {
+          //   await clearIntervalAsync(timer);
+          // }
         });
     } else {
       res.send("Please enable service");
