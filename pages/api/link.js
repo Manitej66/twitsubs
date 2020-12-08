@@ -58,7 +58,7 @@ async function handler(req, res) {
                   data + "~ " + String(subs) + " subs on YouTube 😎 |",
               })
               .then((response) => {
-                //res.status(200).send("Successfully linked");
+                res.status(200).send("Successfully linked");
               })
               .catch((e) => {
                 if ("errors" in e) {
