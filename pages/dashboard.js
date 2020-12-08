@@ -9,14 +9,15 @@ import {
   useToasts,
 } from "@geist-ui/react";
 import { auth } from "../config/firebase";
-import Link from "next/link";
 import Axios from "axios";
 import { useRouter } from "next/router";
 
 const dashboard = () => {
   const [user, setUser] = useState(null);
   const [load, setLoad] = useState(false);
+  const [pload, setpLoad] = useState(true);
   const [click, setClick] = useState(false);
+  const [status, setStatus] = useState(false);
   const [info, setInfo] = useState();
   const [url, setUrl] = useState("");
   const router = useRouter();
@@ -61,10 +62,19 @@ const dashboard = () => {
 
   const linkToTwitter = async () => {
     setLoad(true);
+    await Axios.post("/api/updatestatus", {
+      email: auth.currentUser.email,
+      status: true,
+    })
+      .then((res) => {
+        console.log("");
+      })
+      .catch((e) => console.log(e));
     const pattern = "youtube.com/channel/([^#&?]*).*";
     const match = url.match(pattern);
     await Axios.post("/api/link", {
       channelId: match[1],
+      email: auth.currentUser.email,
     })
       .then((res) => {
         setLoad(false);
@@ -74,6 +84,19 @@ const dashboard = () => {
         clickToast(e.message);
         setLoad(false);
       });
+  };
+
+  const unlink = async () => {
+    setLoad(true);
+
+    await Axios.post("/api/updatestatus", {
+      email: auth.currentUser.email,
+      status: false,
+    })
+      .then((res) => {
+        setLoad(false);
+      })
+      .catch((e) => setLoad(false));
   };
 
   return (
@@ -131,9 +154,14 @@ const dashboard = () => {
           </Button>
         </>
       ) : null}
-      <Text blockquote>
-        To stop the service <Link href="/stop">click here</Link>{" "}
-      </Text>
+      <Button
+        onClick={unlink}
+        loading={load}
+        style={{ marginTop: 20 }}
+        size="large"
+      >
+        Stop the service
+      </Button>
     </div>
   );
 };

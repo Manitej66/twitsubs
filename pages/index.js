@@ -3,8 +3,8 @@ import { Text, Code, Tree, Image, Button, Row, Loading } from "@geist-ui/react";
 import { useRouter } from "next/router";
 import { auth, provider } from "../config/firebase";
 import { useEffect, useState } from "react";
-import Cookie from "js-cookie";
 import Cryptr from "cryptr";
+import Axios from "axios";
 const cryptr = new Cryptr(process.env.NEXT_PUBLIC_PASSWORD);
 
 export default function Home() {
@@ -66,11 +66,16 @@ export default function Home() {
           await auth
             .signInWithPopup(provider)
             .then((res) => {
-              Cookie.set("token", cryptr.encrypt(res.credential.accessToken));
-              Cookie.set("secret", cryptr.encrypt(res.credential.secret));
-              Cookie.set("desc", res.additionalUserInfo.profile.description);
-              Cookie.set("username", res.additionalUserInfo.username);
-              router.replace("/dashboard");
+              Axios.post("/api/writeData", {
+                token: cryptr.encrypt(res.credential.accessToken),
+                secret: cryptr.encrypt(res.credential.secret),
+                email: res.user.email,
+                username: res.additionalUserInfo.username,
+              })
+                .then((res) => {
+                  console.log(res.data);
+                })
+                .catch((e) => console.log(e));
             })
             .catch((err) => console.log(err));
         }}
