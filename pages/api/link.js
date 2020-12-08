@@ -80,13 +80,17 @@ async function handler(req, res) {
               });
           }
 
-          const timer = setIntervalAsync(async () => {
+          while (doc.data().status) {
             await refreshData();
-          }, 120 * 1000);
-
-          if (!doc.data().status) {
-            await clearIntervalAsync(timer);
           }
+
+          // const timer = setIntervalAsync(async () => {
+          //   await refreshData();
+          // }, 120 * 1000);
+
+          // if (!doc.data().status) {
+          //   await clearIntervalAsync(timer);
+          // }
         });
     } else {
       res.send("Please enable service");
