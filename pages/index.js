@@ -45,7 +45,7 @@ export default function Home() {
       </Text>
       <Text p style={{ padding: 10 }}>
         Youtubio is a tool that automatically updates your twitter bio with the
-        subscriber count every 24hrs<span>🐱‍🏍</span>
+        subscriber count<span>🐱‍🏍</span>
       </Text>
       <Tree
         style={{
