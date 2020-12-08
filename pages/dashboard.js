@@ -149,14 +149,18 @@ const dashboard = () => {
               <Badge type="success">{info.subscriberCount}</Badge>
             </Card.Footer>
           </Card>
-          <Button onClick={linkToTwitter} loading={load} size="large">
+          <Button
+            onClick={linkToTwitter}
+            //loading={load}
+            size="large"
+          >
             Link to Twitter
           </Button>
         </>
       ) : null}
       <Button
         onClick={unlink}
-        loading={load}
+        //loading={load}
         style={{ marginTop: 20 }}
         size="large"
       >
