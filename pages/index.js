@@ -70,6 +70,7 @@ export default function Home() {
               Cookie.set("secret", cryptr.encrypt(res.credential.secret));
               Cookie.set("desc", res.additionalUserInfo.profile.description);
               Cookie.set("username", res.additionalUserInfo.username);
+              router.replace("/dashboard");
             })
             .catch((err) => console.log(err));
         }}

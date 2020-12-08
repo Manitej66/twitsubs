@@ -12,7 +12,6 @@ import { auth } from "../config/firebase";
 import Link from "next/link";
 import Axios from "axios";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
 
 const dashboard = () => {
   const [user, setUser] = useState(null);
@@ -135,21 +134,6 @@ const dashboard = () => {
       <Text blockquote>
         To stop the service <Link href="/stop">click here</Link>{" "}
       </Text>
-      <Button
-        type="error"
-        onClick={() => {
-          auth.signOut().then(() => {
-            Cookies.remove("token");
-            Cookies.remove("secret");
-            Cookies.remove("desc");
-            Cookies.remove("username");
-            router.replace("/");
-          });
-        }}
-        style={{ margin: 20 }}
-      >
-        Logout
-      </Button>
     </div>
   );
 };
