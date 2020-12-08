@@ -85,6 +85,7 @@ async function handler(req, res) {
           // while (doc.data().status) {
           //   await refreshData();
           // }
+          refreshData();
 
           const timer = setIntervalAsync(async () => {
             await refreshData();
