@@ -29,8 +29,8 @@ async function handler(req, res) {
             access_token_secret: cryptr.decrypt(doc.data().secret),
           });
 
-          //async function refreshData() {
-          while (doc.data().status) {
+          async function refreshData() {
+            //while (doc.data().status) {
             const profile = await client.get("users/show", {
               screen_name: doc.data().username,
             });
@@ -86,13 +86,13 @@ async function handler(req, res) {
           //   await refreshData();
           // }
 
-          // const timer = setIntervalAsync(async () => {
-          //   await refreshData();
-          // }, 120 * 1000);
+          const timer = setIntervalAsync(async () => {
+            await refreshData();
+          }, 120 * 1000);
 
-          // if (!doc.data().status) {
-          //   await clearIntervalAsync(timer);
-          // }
+          if (!doc.data().status) {
+            await clearIntervalAsync(timer);
+          }
         });
     } else {
       res.send("Please enable service");
