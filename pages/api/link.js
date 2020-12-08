@@ -29,7 +29,8 @@ async function handler(req, res) {
             access_token_secret: cryptr.decrypt(doc.data().secret),
           });
 
-          async function refreshData() {
+          //async function refreshData() {
+          while (doc.data().status) {
             const profile = await client.get("users/show", {
               screen_name: doc.data().username,
             });
@@ -79,10 +80,11 @@ async function handler(req, res) {
                 }
               });
           }
+          // }
 
-          while (doc.data().status) {
-            await refreshData();
-          }
+          // while (doc.data().status) {
+          //   await refreshData();
+          // }
 
           // const timer = setIntervalAsync(async () => {
           //   await refreshData();
