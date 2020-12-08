@@ -71,6 +71,6 @@ async function handler(req, res) {
     refreshData();
   }
   fn60sec();
-  setInterval(fn60sec, 600 * 1000);
+  setInterval(fn60sec, 120 * 1000);
 }
 export default handler;
