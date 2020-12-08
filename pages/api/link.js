@@ -2,13 +2,6 @@ const axios = require("axios");
 const Cryptr = require("cryptr");
 import Twitter from "twitter-lite";
 import { db } from "../../config/firebase";
-import {
-  setIntervalAsync,
-  clearIntervalAsync,
-} from "set-interval-async/dynamic";
-var schedule = require("node-schedule");
-var rule = new schedule.RecurrenceRule();
-rule.second = 50;
 
 async function handler(req, res) {
   const { channelId, email } = req.body;
@@ -31,77 +24,48 @@ async function handler(req, res) {
             access_token_key: cryptr.decrypt(doc.data().token),
             access_token_secret: cryptr.decrypt(doc.data().secret),
           });
+          const profile = await client.get("users/show", {
+            screen_name: doc.data().username,
+          });
+          let data = profile.description;
 
-          async function refreshData() {
-            //while (doc.data().status) {
-            const profile = await client.get("users/show", {
-              screen_name: doc.data().username,
-            });
-            let data = profile.description;
+          if (String(data).length > 130) {
+            return res.send(
+              "Bio length must be less than 130 characters inorder to work"
+            );
+          }
 
-            if (String(data).length > 130) {
-              return res.send(
-                "Bio length must be less than 130 characters inorder to work"
-              );
-            }
+          const up = String(data).split("~").pop().split("|")[0];
 
-            const up = String(data).split("~").pop().split("|")[0];
+          if (up.includes("subs on YouTube")) {
+            data = data.replace(up, "").replace("~", "").replace("|", "");
+          }
 
-            if (up.includes("subs on YouTube")) {
-              data = data.replace(up, "").replace("~", "").replace("|", "");
-            }
+          const sub_count = await axios.post(`${url}/subs`, {
+            channelId: channelId,
+          });
+          const subs = sub_count.data.subscriberCount;
 
-            const sub_count = await axios.post(`${url}/subs`, {
-              channelId: channelId,
-            });
-            const subs = sub_count.data.subscriberCount;
-
-            await client
-              .post("account/update_profile", {
-                description:
-                  data + "~ " + String(subs) + " subs on YouTube 😎 |",
-              })
-              .then((response) => {
-                res.status(200).send("Successfully linked");
-              })
-              .catch((e) => {
-                if ("errors" in e) {
-                  // Twitter API error
-                  if (e.errors[0].code === 88) {
-                    setTimeout(function () {
-                      refreshData();
-                    }, 900000);
-                    res.send(
-                      "limit exceeded! the service will start after 15min"
-                    );
-                  } else {
-                    res.send(e);
-                  }
+          await client
+            .post("account/update_profile", {
+              description: data + "~ " + String(subs) + " subs on YouTube 😎 |",
+            })
+            .then((response) => {
+              res.status(200).send("Successfully linked");
+            })
+            .catch((e) => {
+              if ("errors" in e) {
+                // Twitter API error
+                if (e.errors[0].code === 88) {
+                  res.send("limit exceeded! try after 15min");
                 } else {
                   res.send(e);
-                  // non-API error, e.g. network problem or invalid JSON in response
                 }
-              });
-          }
-          // }
-
-          // while (doc.data().status) {
-          //   await refreshData();
-          // }
-
-          var j = schedule.scheduleJob(rule, async function () {
-            await refreshData();
-          });
-
-          // refreshData();
-
-          // const timer = setIntervalAsync(async () => {
-          //   await refreshData();
-          // }, 120 * 1000);
-
-          // if (!doc.data().status) {
-          //   await clearIntervalAsync(timer);
-          // }
+              } else {
+                res.send(e);
+                // non-API error, e.g. network problem or invalid JSON in response
+              }
+            });
         });
     } else {
       res.send("Please enable service");
