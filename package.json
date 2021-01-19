@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.0-canary.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "cryptr": "^6.0.2",
     "firebase": "^8.1.1",
     "next": "10.0.3",
